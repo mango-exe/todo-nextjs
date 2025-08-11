@@ -20,6 +20,7 @@ export class TodosRepository {
     )
   }
 
+
   async getTodoById(id: number): Promise<Todo | null> {
     const result = await this.connection.client.select().from(todos).where(
       and(

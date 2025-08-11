@@ -3,17 +3,16 @@ import { NextRequest, NextResponse } from "next/server"
 import { TodosRepository } from '@/lib/db/repositories/todos-repository'
 import { Container } from 'typedi'
 import { UpdateTodo } from '@/lib/db/schema/todos'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
 const todosRepository = Container.get(TodosRepository)
 export async function PUT(request: NextRequest, { params }: { params:  Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const userId = request.headers.get('x-user-id')
+    const session = await getServerSession(authOptions)
+    const user = session!.user
     const body: UpdateTodo = await request.json()
-
-    if (!userId) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    }
 
     const { description } = body
 
@@ -27,7 +26,7 @@ export async function PUT(request: NextRequest, { params }: { params:  Promise<{
       return NextResponse.json({ message: 'Not found' }, { status: 404 })
     }
 
-    if (todo.userId !== parseInt(userId)) {
+    if (todo.userId !== parseInt(user.id)) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
 

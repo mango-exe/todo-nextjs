@@ -1,11 +1,11 @@
 'use client'
 import React, { useState } from 'react'
+
 import { Button } from "@/components/ui/button"
 import {
   Card,
   CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -14,22 +14,30 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
 
-import { signIn } from 'next-auth/react'
+import axios from 'axios'
+
+import { SERVER } from '@/lib/config/global'
 
 import { useRouter } from 'next/navigation'
 
-export default function Home() {
+export default function SignUp() {
   const router = useRouter()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-
-  const handleSignIn = async () => {
+  const handleSignUp = async () => {
     try {
-      await signIn('credentials', { email, password, redirect: true, callbackUrl: '/todos' })
-    } catch(error) {
-      console.warn(error)
+      const response = await axios.post(`${SERVER}/api/auth/register`, {
+        email,
+        password
+      })
+
+      if (response.status === 201) {
+        router.push('/')
+      }
+    } catch(e) {
+      console.warn(e)
     }
   }
 
@@ -37,13 +45,10 @@ export default function Home() {
     <div className="h-[100%] w-[100%] flex items-center justify-center">
       <Card className="w-full max-w-sm">
         <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account
-          </CardDescription>
+          <CardTitle>Create an account</CardTitle>
           <CardAction>
-            <Link href="/signup">
-              Sign Up
+            <Link href="/">
+              Login
             </Link>
           </CardAction>
         </CardHeader>
@@ -58,21 +63,21 @@ export default function Home() {
                   placeholder="m@example.com"
                   required
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
                 </div>
-                <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} />
+                <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
               </div>
             </div>
           </form>
         </CardContent>
         <CardFooter className="flex-col gap-2">
-          <Button className="w-full" onClick={handleSignIn}>
-            Login
+          <Button className="w-full" onClick={handleSignUp}>
+            Sign Up
           </Button>
         </CardFooter>
       </Card>

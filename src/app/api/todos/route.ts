@@ -1,21 +1,19 @@
 import 'reflect-metadata'
 import { NextResponse } from "next/server"
-import { UsersRepository } from "@/lib/db/repositories/users-repository"
 import { TodosRepository } from '@/lib/db/repositories/todos-repository'
 import { Container } from 'typedi'
 import { CreateTodo, NewTodo } from '@/lib/db/schema/todos'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]/route'
 
 const todosRepository = Container.get(TodosRepository)
 
 export async function GET(request: Request) {
   try {
-    const userId = request.headers.get('x-user-id')
+    const session = await getServerSession(authOptions)
+    const user = session!.user
 
-    if (!userId) {
-      return NextResponse.json({ message: 'Unauthorized'}, { status: 401 })
-    }
-
-    const todos = await todosRepository.getAllUserTodos(parseInt(userId))
+    const todos = await todosRepository.getAllUserTodos(parseInt(user.id))
 
     return NextResponse.json(todos, { status: 200 })
   } catch(e) {
@@ -26,12 +24,10 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const userId = request.headers.get('x-user-id')
+    const session = await getServerSession(authOptions)
+    const user = session!.user
     const body: CreateTodo| null = await request.json()
 
-    if (!userId) {
-      return NextResponse.json({ message: 'Unauthorized'}, { status: 401 })
-    }
 
     if (!body) {
       return NextResponse.json({ message: 'Bad request' }, { status: 400 })
@@ -44,7 +40,7 @@ export async function POST(request: Request) {
     }
 
     const newTodo: NewTodo = {
-      userId: parseInt(userId),
+      userId: parseInt(user.id),
       description
     }
 
