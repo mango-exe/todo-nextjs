@@ -1,8 +1,7 @@
-import { createStore, StoreApi } from 'zustand'
+import { createStore, StoreApi, useStore } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { TodosState, TodosStore } from '@/types/stores/todos.types'
-import { getTodos, addTodo, updateTodo, updateTodosOrder,  deleteTodo, moveTodoInTodo, moveTodoInProgress, moveTodoInDone } from './actions/todos-actions'
-import { useStore } from 'zustand'
+import { getTodos, addTodo, updateTodo, updateTodosOrder, deleteTodo, moveTodoInTodo, moveTodoInProgress, moveTodoInDone } from './actions/todos-actions'
 
 export const initialState: TodosState = {
   todos: [],
@@ -16,8 +15,8 @@ export const createTodosStore = (
   initState: TodosState = initialState
 ): StoreApi<TodosStore> => {
   return createStore<
-    TodosStore,
-    [["zustand/immer", never]]
+  TodosStore,
+  [['zustand/immer', never]]
   >(
     immer((...args) => ({
       ...initState,
@@ -34,6 +33,6 @@ export const createTodosStore = (
 }
 
 export const todosStore = createTodosStore()
-export function useTodosStore<T>(selector: (state: TodosStore) => T): T {
+export function useTodosStore<T> (selector: (state: TodosStore) => T): T {
   return useStore(todosStore, selector)
 }

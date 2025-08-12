@@ -1,17 +1,17 @@
 import 'reflect-metadata'
-import { NextResponse } from "next/server"
-import { UsersRepository } from "@/lib/db/repositories/users-repository"
+import { NextResponse } from 'next/server'
+import { UsersRepository } from '@/lib/db/repositories/users-repository'
 import { Container } from 'typedi'
 import { CreateUser, NewUser } from '@/lib/db/schema/users'
 import bcrypt from 'bcrypt'
 
 const usersRepository = Container.get(UsersRepository)
 
-export async function POST(request: Request) {
+export async function POST (request: Request) {
   try {
     const body: CreateUser | null = await request.json()
 
-    if (!body) {
+    if (body == null) {
       return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
     }
 
@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     await usersRepository.createUser(user)
 
     return NextResponse.json({ message: 'Create' }, { status: 201 })
-  } catch(e) {
+  } catch (e) {
     console.warn(e)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

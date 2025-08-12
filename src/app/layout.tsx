@@ -5,15 +5,14 @@ import TopBar from '@/components/topbar'
 import AppFooter from '@/components/app-footer'
 import { SessionProvider } from 'next-auth/react'
 
-export default function RootLayout({
-  children,
+export default function RootLayout ({
+  children
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={styles.appContainer}
-      >
+    <html lang='en' className='dark'>
+      <body className={styles.appContainer}>
         <div className={styles.navbarArea}>
           <TopBar />
         </div>
@@ -27,5 +26,5 @@ export default function RootLayout({
         </div>
       </body>
     </html>
-  );
+  )
 }

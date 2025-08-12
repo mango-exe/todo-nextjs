@@ -7,28 +7,23 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
+  CardTitle
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
 
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd'
 
-import { Check } from 'lucide-react'
-import { Loader } from 'lucide-react'
-import { Pickaxe } from 'lucide-react'
-import { Plus } from 'lucide-react'
-import { Trash } from 'lucide-react'
+import { Check, Loader, Pickaxe, Plus, Trash } from 'lucide-react'
 
 import TodoDialog from '@/components/todo-dialog'
 
 import { Todo } from '@/types/stores/todos.types'
 
-export default function Todos() {
+export default function Todos () {
   const [isTodoDialogOpen, setIsTodoDialogOpen] = useState(false)
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
-  const { todos, getTodos, deleteTodo, updateTodo, updateTodosOrder, moveTodoInTodo, moveTodoInDone, moveTodoInProgress  } = useTodosStore(s => s)
-
+  const { todos, getTodos, deleteTodo, updateTodo, updateTodosOrder, moveTodoInTodo, moveTodoInDone, moveTodoInProgress } = useTodosStore(s => s)
 
   type ColumnId = 'TO_DO' | 'IN_PROGRESS' | 'DONE'
   type TodosState = Record<ColumnId, Todo[]>
@@ -54,7 +49,6 @@ export default function Todos() {
         IN_PROGRESS: inProgress,
         DONE: done
       })
-
     }
   }, [todos])
 
@@ -63,7 +57,7 @@ export default function Todos() {
   }
 
   const handleUpdateTodo = () => {
-    if (editingTodo) {
+    if (editingTodo != null) {
       updateTodo(editingTodo)
       setEditingTodo(null)
     }
@@ -77,29 +71,28 @@ export default function Todos() {
             ref={provided.innerRef}
             {...provided.dragHandleProps}
             {...provided.draggableProps}
-            className="relative"
+            className='relative'
           >
             <Button
-              size="icon"
-              variant="ghost"
-              className="text-red-500 absolute top-[-2px] right-[-3px]"
-              onClick={() => handleDeleteTodo(item.id) }
+              size='icon'
+              variant='ghost'
+              className='text-red-500 absolute top-[-2px] right-[-3px]'
+              onClick={() => handleDeleteTodo(item.id)}
             >
               <Trash />
             </Button>
             <CardContent onDoubleClick={() => setEditingTodo(item)}>
-              {editingTodo && editingTodo.id === item.id ?
-              <div className='flex flex-col justify-center items-center gap-y-2'>
-               <Textarea value={editingTodo.description} onChange={(e) => setEditingTodo({ ...editingTodo, description: e.target.value})} />
-               <Button
-                 variant="outline"
-                 onClick={() => handleUpdateTodo() }
-               >
-                 Save
-               </Button>
-              </div>
-               :
-                item.description}
+              {(editingTodo != null) && editingTodo.id === item.id
+                ? <div className='flex flex-col justify-center items-center gap-y-2'>
+                  <Textarea value={editingTodo.description} onChange={(e) => setEditingTodo({ ...editingTodo, description: e.target.value })} />
+                  <Button
+                    variant='outline'
+                    onClick={() => handleUpdateTodo()}
+                  >
+                    Save
+                  </Button>
+                </div>
+                : item.description}
             </CardContent>
           </Card>
 
@@ -118,52 +111,51 @@ export default function Todos() {
   }
 
   const onDragEnd = (result: DropResult) => {
-    const { source, destination } = result;
-    if (!destination) return;
+    const { source, destination } = result
+    if (destination == null) return
 
-    const sourceId = source.droppableId as ColumnId;
-    const destId = destination.droppableId as ColumnId;
+    const sourceId = source.droppableId as ColumnId
+    const destId = destination.droppableId as ColumnId
 
-    const sourceClone = Array.from(todosState[sourceId]);
-    const destClone = Array.from(todosState[destId]);
+    const sourceClone = Array.from(todosState[sourceId])
+    const destClone = Array.from(todosState[destId])
 
     if (sourceId === destId) {
-      const [moved] = sourceClone.splice(source.index, 1);
-      sourceClone.splice(destination.index, 0, moved);
+      const [moved] = sourceClone.splice(source.index, 1)
+      sourceClone.splice(destination.index, 0, moved)
 
       setTodosState(prev => ({
         ...prev,
-        [sourceId]: sourceClone,
-      }));
+        [sourceId]: sourceClone
+      }))
 
       updatedTodosOrder(sourceId, sourceClone)
     } else {
-      const [moved] = sourceClone.splice(source.index, 1);
-      destClone.splice(destination.index, 0, moved);
+      const [moved] = sourceClone.splice(source.index, 1)
+      destClone.splice(destination.index, 0, moved)
 
-      switch(destId) {
+      switch (destId) {
         case 'TO_DO':
           moveTodoInTodo(moved.id)
-          break;
+          break
         case 'IN_PROGRESS':
           moveTodoInProgress(moved.id)
-          break;
+          break
         case 'DONE':
-         moveTodoInDone(moved.id)
-         break
+          moveTodoInDone(moved.id)
+          break
       }
 
       setTodosState(prev => ({
         ...prev,
         [sourceId]: sourceClone,
-        [destId]: destClone,
-      }));
+        [destId]: destClone
+      }))
 
       updatedTodosOrder(sourceId, sourceClone)
       updatedTodosOrder(destId, destClone)
     }
   }
-
 
   return (
     <>
@@ -173,11 +165,11 @@ export default function Todos() {
         <div className='grid grid-cols-3 gap-4 w-full h-full justify-center items-center p-5'>
           <Card className='h-full pb-0'>
             <CardTitle className='flex justify-center items-center text-2xl gap-2'>
-            <span>To do</span>
-            <Pickaxe />
+              <span>To do</span>
+              <Pickaxe />
             </CardTitle>
             <CardContent className='h-full'>
-              <Droppable droppableId="TO_DO">
+              <Droppable droppableId='TO_DO'>
                 {(provided, snapshot) => (
                   <div
                     className='flex flex-col gap-4 h-full'
@@ -190,10 +182,10 @@ export default function Todos() {
                 )}
               </Droppable>
             </CardContent>
-              <Button variant="ghost" onClick={() => setIsTodoDialogOpen(true)}>
-                Add
-                <Plus />
-              </Button>
+            <Button variant='ghost' onClick={() => setIsTodoDialogOpen(true)}>
+              Add
+              <Plus />
+            </Button>
           </Card>
 
           <Card className='h-full'>
@@ -202,7 +194,7 @@ export default function Todos() {
               <Loader />
             </CardTitle>
             <CardContent className='h-full'>
-              <Droppable droppableId="IN_PROGRESS">
+              <Droppable droppableId='IN_PROGRESS'>
                 {(provided, snapshot) => (
                   <div
                     className='flex flex-col gap-4 h-full'
@@ -223,7 +215,7 @@ export default function Todos() {
               <Check />
             </CardTitle>
             <CardContent className='h-full'>
-              <Droppable droppableId="DONE">
+              <Droppable droppableId='DONE'>
                 {(provided, snapshot) => (
                   <div
                     className='flex flex-col gap-4 h-full'

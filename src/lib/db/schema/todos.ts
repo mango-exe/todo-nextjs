@@ -1,6 +1,6 @@
 import { int, mysqlTable, varchar, mysqlEnum, boolean, datetime } from 'drizzle-orm/mysql-core'
 import { sql } from 'drizzle-orm'
-import { users } from './users';
+import { users } from './users'
 
 const stateEnum = mysqlEnum('state', ['TO_DO', 'IN_PROGRESS', 'DONE'])
 
@@ -20,7 +20,7 @@ export type NewTodo = Omit<Todo, 'id' | 'createdAt' | 'state' | 'enabled' | 'ord
 export type UpdateTodo = Pick<Todo, 'description'>
 export type CreateTodo = Pick<Todo, 'description'>
 export type TodosSchemaType = typeof todos
-export type TodosOrder = {
-  state: 'TO_DO' | 'IN_PROGRESS' | 'DONE',
-  order: { id: string, order: number }[]
+export interface TodosOrder {
+  state: 'TO_DO' | 'IN_PROGRESS' | 'DONE'
+  order: Array<{ id: string, order: number }>
 }

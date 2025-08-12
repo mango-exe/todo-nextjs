@@ -1,5 +1,5 @@
-export default function AppFooter() {
+export default function AppFooter () {
   return (
-    <div></div>
+    <div />
   )
 }

@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from 'next/server'
 import { TodosRepository } from '@/lib/db/repositories/todos-repository'
 import { Container } from 'typedi'
 import { UpdateTodo } from '@/lib/db/schema/todos'
@@ -8,21 +8,20 @@ import { authOptions } from '../../auth/[...nextauth]/route'
 
 const todosRepository = Container.get(TodosRepository)
 
-export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }>}) {
+export async function DELETE (request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
 
     await todosRepository.deleteTodo(parseInt(id))
 
     return NextResponse.json({}, { status: 200 })
-  } catch(e) {
+  } catch (e) {
     console.warn(e)
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 })
   }
 }
 
-
-export async function PUT(request: NextRequest, { params }: { params:  Promise<{ id: string }> }) {
+export async function PUT (request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const session = await getServerSession(authOptions)
@@ -37,7 +36,7 @@ export async function PUT(request: NextRequest, { params }: { params:  Promise<{
 
     const todo = await todosRepository.getTodoById(parseInt(id))
 
-    if (!todo) {
+    if (todo == null) {
       return NextResponse.json({ message: 'Not found' }, { status: 404 })
     }
 
@@ -48,8 +47,8 @@ export async function PUT(request: NextRequest, { params }: { params:  Promise<{
     await todosRepository.updateTodo(parseInt(id), { description })
 
     return NextResponse.json({}, { status: 200 })
-  } catch(e) {
+  } catch (e) {
     console.warn(e)
-    return NextResponse.json({ message: 'Internal Server Error'}, { status: 500 })
+    return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 })
   }
 }
