@@ -2,7 +2,6 @@ import 'reflect-metadata'
 import { NextRequest, NextResponse } from "next/server"
 import { TodosRepository } from '@/lib/db/repositories/todos-repository'
 import { Container } from 'typedi'
-import { UpdateTodo } from '@/lib/db/schema/todos'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 
@@ -12,13 +11,6 @@ export async function PUT(request: NextRequest, { params }: { params:  Promise<{
     const { id } = await params
     const session = await getServerSession(authOptions)
     const user = session!.user
-    const body: UpdateTodo = await request.json()
-
-    const { description } = body
-
-    if (!description) {
-      return NextResponse.json({ message: 'Bad Request' }, { status: 400 })
-    }
 
     const todo = await todosRepository.getTodoById(parseInt(id))
 
@@ -30,7 +22,7 @@ export async function PUT(request: NextRequest, { params }: { params:  Promise<{
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
 
-    await todosRepository.updateTodo(parseInt(id), { description, state: 'IN_PROGRESS' })
+    await todosRepository.updateTodo(parseInt(id), { state: 'TO_DO' })
 
     return NextResponse.json({}, { status: 200 })
   } catch(e) {

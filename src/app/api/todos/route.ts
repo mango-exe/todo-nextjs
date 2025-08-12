@@ -46,6 +46,7 @@ export async function POST(request: Request) {
 
     await todosRepository.createTodo(newTodo)
 
+    return NextResponse.json({}, { status: 201 })
   } catch(e) {
     console.warn(e)
     return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 })

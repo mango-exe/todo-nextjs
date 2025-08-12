@@ -1,5 +1,5 @@
 import { eq, and } from 'drizzle-orm'
-import { todos, Todo, NewTodo } from '../schema/todos';
+import { todos, Todo, NewTodo, TodosOrder } from '../schema/todos';
 import { Service, Inject } from 'typedi'
 import { DBConnection } from '../index'
 
@@ -17,7 +17,7 @@ export class TodosRepository {
         eq(todos.enabled, true),
         eq(todos.userId, userId),
       )
-    )
+    ).orderBy(todos.order)
   }
 
 
@@ -37,6 +37,17 @@ export class TodosRepository {
 
   async updateTodo(id: number, todo: Partial<Todo>): Promise<void> {
     await this.connection.client.update(todos).set(todo).where(eq(todos.id, id))
+  }
+
+  async updateTodoOrder(todosOrder: TodosOrder): Promise<void> {
+    for (const order of todosOrder.order) {
+      await this.connection.client.update(todos).set({ order: order.order }).where(
+        and(
+          eq(todos.id, parseInt(order.id)),
+          eq(todos.state, todosOrder.state)
+        )
+      )
+    }
   }
 
   async deleteTodo(id: number): Promise<void> {

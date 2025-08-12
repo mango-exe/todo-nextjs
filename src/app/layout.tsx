@@ -1,7 +1,9 @@
+'use client'
 import '../styles/globals.css'
 import styles from '@/app/layout.module.css'
 import TopBar from '@/components/topbar'
 import AppFooter from '@/components/app-footer'
+import { SessionProvider } from 'next-auth/react'
 
 export default function RootLayout({
   children,
@@ -16,7 +18,9 @@ export default function RootLayout({
           <TopBar />
         </div>
         <div className={styles.mainArea}>
-          {children}
+          <SessionProvider>
+            {children}
+          </SessionProvider>
         </div>
         <div className={styles.footerArea}>
           <AppFooter />

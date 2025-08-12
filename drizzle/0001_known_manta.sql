@@ -1,0 +1,1 @@
+ALTER TABLE `todos` ADD `order` int DEFAULT 0 NOT NULL;

@@ -1,7 +1,7 @@
 import { createStore, StoreApi } from 'zustand'
 import { immer } from 'zustand/middleware/immer'
 import { TodosState, TodosStore } from '@/types/stores/todos.types'
-import { getTodos } from './actions/todos-actions'
+import { getTodos, addTodo, updateTodo, updateTodosOrder,  deleteTodo, moveTodoInTodo, moveTodoInProgress, moveTodoInDone } from './actions/todos-actions'
 import { useStore } from 'zustand'
 
 export const initialState: TodosState = {
@@ -17,11 +17,18 @@ export const createTodosStore = (
 ): StoreApi<TodosStore> => {
   return createStore<
     TodosStore,
-    [["zustand/immer", never]] // 👈 this is key
+    [["zustand/immer", never]]
   >(
     immer((...args) => ({
       ...initState,
+      ...addTodo(...args),
       ...getTodos(...args),
+      ...updateTodo(...args),
+      ...updateTodosOrder(...args),
+      ...deleteTodo(...args),
+      ...moveTodoInTodo(...args),
+      ...moveTodoInProgress(...args),
+      ...moveTodoInDone(...args)
     }))
   )
 }

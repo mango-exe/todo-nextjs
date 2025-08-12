@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "2d4c7c8b-596a-468b-940c-092b0df495b5",
+  "id": "b7df36cf-54ad-49a0-a451-099465ef9cfa",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "todos": {
@@ -12,15 +12,15 @@
           "type": "int",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
-        "state_enum": {
-          "name": "state_enum",
-          "type": "enum('TODO','IN_PROGRESS','DONE')",
+        "state": {
+          "name": "state",
+          "type": "enum('TO_DO','IN_PROGRESS','DONE')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "'TODO'"
+          "default": "'TO_DO'"
         },
         "description": {
           "name": "description",
@@ -28,10 +28,47 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "enabled": {
+          "name": "enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "CURRENT_TIMESTAMP"
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "todos_user_id_users_id_fk": {
+          "name": "todos_user_id_users_id_fk",
+          "tableFrom": "todos",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {
         "todos_id": {
           "name": "todos_id",
@@ -51,7 +88,7 @@
           "type": "int",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
+          "autoincrement": true
         },
         "email": {
           "name": "email",
@@ -67,11 +104,26 @@
           "notNull": true,
           "autoincrement": false
         },
-        "salt": {
-          "name": "salt",
-          "type": "varchar(255)",
+        "enabled": {
+          "name": "enabled",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "token": {
+          "name": "token",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "expiry": {
+          "name": "expiry",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         }
       },
@@ -85,7 +137,14 @@
           ]
         }
       },
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "columns": [
+            "email"
+          ]
+        }
+      },
       "checkConstraint": {}
     }
   },

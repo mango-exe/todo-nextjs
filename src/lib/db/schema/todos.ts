@@ -10,11 +10,17 @@ export const todos = mysqlTable('todos', {
   description: varchar('description', { length: 255 }).notNull(),
   userId: int('user_id').notNull().references(() => users.id),
   enabled: boolean().notNull().default(true),
-  createdAt: datetime().notNull().default(sql`CURRENT_TIMESTAMP`)
+  createdAt: datetime().notNull().default(sql`CURRENT_TIMESTAMP`),
+  order: int('order').notNull().default(0)
+
 })
 
 export type Todo = typeof todos.$inferSelect
-export type NewTodo = Omit<Todo, 'id' | 'createdAt' | 'state' | 'enabled'>
+export type NewTodo = Omit<Todo, 'id' | 'createdAt' | 'state' | 'enabled' | 'order'>
 export type UpdateTodo = Pick<Todo, 'description'>
 export type CreateTodo = Pick<Todo, 'description'>
 export type TodosSchemaType = typeof todos
+export type TodosOrder = {
+  state: 'TO_DO' | 'IN_PROGRESS' | 'DONE',
+  order: { id: string, order: number }[]
+}

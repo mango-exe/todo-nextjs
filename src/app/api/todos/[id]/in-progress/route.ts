@@ -23,7 +23,7 @@ export async function PUT(request: NextRequest, { params }: { params:  Promise<{
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
 
-    await todosRepository.updateTodo(parseInt(id), { state: 'DONE' })
+    await todosRepository.updateTodo(parseInt(id), { state: 'IN_PROGRESS' })
 
     return NextResponse.json({}, { status: 200 })
   } catch(e) {
