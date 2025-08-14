@@ -8,19 +8,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
+} from '@/app/components/ui/card'
+import { Button } from '@/app/components/ui/button'
+import { Textarea } from '@/app/components/ui/textarea'
 
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd'
 
 import { Check, Loader, Pickaxe, Plus, Trash } from 'lucide-react'
 
-import TodoDialog from '@/components/todo-dialog'
+import TodoDialog from '@/app/components/todo-dialog'
 
 import { Todo } from '@/types/stores/todos.types'
 
-export default function Todos () {
+import { withAuth } from '@/app/components/auth-guard'
+
+function Todos () {
   const [isTodoDialogOpen, setIsTodoDialogOpen] = useState(false)
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
   const { todos, getTodos, deleteTodo, updateTodo, updateTodosOrder, moveTodoInTodo, moveTodoInDone, moveTodoInProgress } = useTodosStore(s => s)
@@ -235,3 +237,5 @@ export default function Todos () {
     </>
   )
 }
+
+export default withAuth(Todos)

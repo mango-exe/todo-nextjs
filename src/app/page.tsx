@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/app/components/ui/button'
 import {
   Card,
   CardAction,
@@ -9,9 +9,9 @@ import {
   CardFooter,
   CardHeader,
   CardTitle
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+} from '@/app/components/ui/card'
+import { Input } from '@/app/components/ui/input'
+import { Label } from '@/app/components/ui/label'
 import Link from 'next/link'
 
 import { signIn } from 'next-auth/react'

@@ -1,8 +1,8 @@
 'use client'
 import '../styles/globals.css'
 import styles from '@/app/layout.module.css'
-import TopBar from '@/components/topbar'
-import AppFooter from '@/components/app-footer'
+import TopBar from '@/app/components/topbar'
+import AppFooter from '@/app/components/app-footer'
 import { SessionProvider } from 'next-auth/react'
 
 export default function RootLayout ({
